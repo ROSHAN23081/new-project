@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Objex | Secure Messaging Demo</title>
+    <style>
+        :root {
+            --mo-gold: #D4AF37;
+            --mo-gold-light: #F4E4BC;
+            --mo-black: #0A0A0A;
+            --mo-dark-gray: #1A1A1A;
+            --mo-gray: #2A2A2A;
+            --mo-white: #FFFFFF;
+            --mo-success: #10B981;
+            --mo-danger: #EF4444;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--mo-black);
+            color: var(--mo-white);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .security-banner {
+            background: linear-gradient(90deg, var(--mo-dark-gray) 0%, var(--mo-gray) 100%);
+            border-bottom: 2px solid var(--mo-gold);
+            padding: 0.75rem 1rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--mo-gold-light);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .auth-card {
+            max-width: 480px;
+            margin: 2rem auto;
+            background: var(--mo-dark-gray);
+            border: 1px solid var(--mo-gray);
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5), 0 0 20px rgba(212,175,55,0.3);
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .logo-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--mo-gold) 0%, #B8941F 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 2rem;
+            color: var(--mo-black);
+            margin: 0 auto 1rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+        }
+        
+        .logo h1 {
+            color: var(--mo-gold);
+            font-size: 1.75rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .logo p {
+            color: #9CA3AF;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--mo-gold-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+        
+        input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: var(--mo-black);
+            border: 2px solid var(--mo-gray);
+            border-radius: 8px;
+            color: var(--mo-white);
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--mo-gold);
+            box-shadow: 0 0 0 3px rgba(212,175,55,0.1);
+        }
+        
+        .error {
+            border-color: var(--mo-danger) !important;
+        }
+        
+        .btn-primary {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--mo-gold) 0%, #B8941F 100%);
+            border: none;
+            border-radius: 8px;
+            color: var(--mo-black);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(212,175,55,0.3);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .error-message {
+            background: rgba(239,68,68,0.1);
+            border: 1px solid var(--mo-danger);
+            border-radius: 8px;
+            padding: 1rem;
+            color: var(--mo-danger);
+            margin-bottom: 1rem;
+            display: none;
+        }
+        
+        .demo-info {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--mo-gray);
+            text-align: center;
+            font-size: 0.85rem;
+            color: #6B7280;
+        }
+        
+        .demo-info code {
+            display: block;
+            margin-top: 0.5rem;
+            padding: 0.75rem;
+            background: var(--mo-black);
+            border-radius: 6px;
+            color: var(--mo-gold);
+            font-family: 'Courier New', monospace;
+        }
+        
+        /* Capture Page Styles */
+        .capture-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .capture-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .card {
+            background: var(--mo-dark-gray);
+            border: 1px solid var(--mo-gray);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+        
+        .card h2 {
+            color: var(--mo-gold);
+            margin-bottom: 1.5rem;
+            font-size: 1.25rem;
+        }
+        
+        .session-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(16,185,129,0.1);
+            border: 1px solid var(--mo-success);
+            border-radius: 20px;
+            font-size: 0.875rem;
+            color: var(--mo-success);
+            margin-bottom: 1.5rem;
+        }
+        
+        .match-indicator {
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+            display: block;
+        }
+        
+        .match-success { color: var(--mo-success); }
+        .match-error { color: var(--mo-danger); }
+        
+        .success-banner {
+            background: rgba(16,185,129,0.1);
+            border: 1px solid var(--mo-success);
+            border-radius: 8px;
+            padding: 1rem;
+            color: var(--mo-success);
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        .data-preview {
+            background: var(--mo-black);
+            border: 1px solid var(--mo-gray);
+            border-radius: 8px;
+            padding: 1rem;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 1rem;
+        }
+        
+        .preview-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--mo-gray);
+        }
+        
+        .preview-item:last-child {
+            border-bottom: none;
+        }
+        
+        .preview-phone {
+            font-family: monospace;
+            color: var(--mo-gold);
+        }
+        
+        .preview-code {
+            background: var(--mo-gold);
+            color: var(--mo-black);
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+        
+        .security-info {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(212,175,55,0.05);
+            border-radius: 8px;
+            border-left: 3px solid var(--mo-gold);
+        }
+        
+        .security-info h4 {
+            color: var(--mo-gold);
+            margin-bottom: 0.5rem;
+        }
+        
+        .security-info ul {
+            list-style: none;
+            font-size: 0.85rem;
+            color: #9CA3AF;
+        }
+        
+        .security-info li {
+            padding: 0.25rem 0;
+        }
+        
+        .security-info li:before {
+            content: "✓ ";
+            color: var(--mo-success);
+            margin-right: 0.5rem;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--mo-gray);
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo-small {
+            width: 40px;
+            height: 40px;
+            background: var(--mo-gold);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--mo-black);
+        }
+        
+        .nav-link {
+            color: #9CA3AF;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            margin: 0 0.5rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: var(--mo-gold);
+            background: rgba(212,175,55,0.1);
+        }
+        
+        .btn-logout {
+            background: transparent;
+            border: 1px solid var(--mo-danger);
+            color: var(--mo-danger);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-logout:hover {
+            background: var(--mo-danger);
+            color: var(--mo-white);
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .countdown {
+            color: var(--mo-gold);
+            font-weight: 600;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--mo-gray);
+            color: #6B7280;
+            font-size: 0.875rem;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 0.875rem;
+            background: var(--mo-black);
+            border: 2px solid var(--mo-gray);
+            border-radius: 8px;
+            color: var(--mo-white);
+            font-family: inherit;
+            resize: vertical;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--mo-gold);
+        }
+        
+        .message-preview {
+            background: var(--mo-black);
+            border: 1px solid var(--mo-gold);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-family: monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <!-- LOGIN PAGE -->
+    <div id="loginPage" class="page">
+        <div class="security-banner">
+            🔒 Secure Connection | AES-256 Encryption | Session Protected
+        </div>
+        
+        <div class="container">
+            <div class="auth-card">
+                <div class="logo">
+                    <div class="logo-icon">MO</div>
+                    <h1>Mobile Objex</h1>
+                    <p>Secure Messaging Demo</p>
+                </div>
+                
+                <div id="loginError" class="error-message"></div>
+                
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="username">MO Username</label>
+                        <input type="text" id="username" name="username" required 
+                               placeholder="demo.operator" autocomplete="off">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" required 
+                               placeholder="••••••••">
+                    </div>
+                    
+                    <button type="submit" class="btn-primary" id="loginBtn">
+                        Secure Login
+                    </button>
+                </form>
+                
+                <div class="demo-info">
+                    <strong>Demo Credentials</strong>
+                    <code>Username: demo.operator<br>Password: DemoPass123!</code>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CAPTURE PAGE -->
+    <div id="capturePage" class="page hidden">
+        <div class="security-banner">
+            🔒 Session Active | Data Encrypted | Auto-Logout in <span class="countdown" id="sessionTimer">30:00</span>
+        </div>
+        
+        <div class="container">
+            <div class="header">
+                <div class="header-left">
+                    <div class="logo-small">MO</div>
+                    <div>
+                        <div style="font-weight: 600;">Mobile Objex Demo</div>
+                        <div style="font-size: 0.8rem; color: #9CA3AF;">Secure Data Capture</div>
+                    </div>
+                </div>
+                <div>
+                    <a href="#" class="nav-link active" onclick="showPage('capture')">Capture</a>
+                    <a href="#" class="nav-link" onclick="showPage('messaging')">Messaging</a>
+                    <button class="btn-logout" onclick="logout()">Secure Logout</button>
+                </div>
+            </div>
+            
+            <div class="capture-grid">
+                <div class="card">
+                    <h2>📱 Phone & Safety Code Capture</h2>
+                    
+                    <div class="session-badge">
+                        <span>●</span>
+                        <span id="sessionIdDisplay">MO-XXXXXXXXX</span>
+                    </div>
+                    
+                    <form id="captureForm">
+                        <div class="form-group">
+                            <label>Phone Number (E.164 format)</label>
+                            <input type="tel" id="capPhone" required 
+                                   placeholder="+1234567890" autocomplete="off">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Confirm Phone Number</label>
+                            <input type="tel" id="capPhoneConfirm" required 
+                                   placeholder="+1234567890" autocomplete="off">
+                            <span class="match-indicator" id="phoneMatch"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Safety Code</label>
+                            <input type="text" id="capCode" required 
+                                   placeholder="MO-2024-XXXX" autocomplete="off"
+                                   style="text-transform: uppercase;">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Confirm Safety Code</label>
+                            <input type="text" id="capCodeConfirm" required 
+                                   placeholder="MO-2024-XXXX" autocomplete="off"
+                                   style="text-transform: uppercase;">
+                            <span class="match-indicator" id="codeMatch"></span>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary">🔐 Secure Capture</button>
+                    </form>
+                    
+                    <div id="captureSuccess" class="success-banner">
+                        ✓ Data captured and encrypted successfully!
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>📋 Session Data Preview</h2>
+                    
+                    <div class="data-preview" id="dataPreview">
+                        <div style="text-align: center; color: #6B7280; padding: 2rem;">
+                            <div style="font-size: 3rem; margin-bottom: 0.5rem;">📭</div>
+                            <p>No data captured in this session yet</p>
+                        </div>
+                    </div>
+                    
+                    <div class="security-info">
+                        <h4>🔒 Security Features</h4>
+                        <ul>
+                            <li>Double-entry verification prevents typos</li>
+                            <li>Data encrypted with AES-256-GCM</li>
+                            <li>Auto-purged on logout or timeout</li>
+                            <li>No persistent storage of phone numbers</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer">
+                <p>Session ID: <code id="footerSessionId">---</code> | 
+                   Captures: <span id="captureCount">0</span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MESSAGING PAGE -->
+    <div id="messagingPage" class="page hidden">
+        <div class="security-banner">
+            🔒 Session Active | Ready to Send | <span class="countdown" id="msgTimer">30:00</span>
+        </div>
+        
+        <div class="container">
+            <div class="header">
+                <div class="header-left">
+                    <div class="logo-small">MO</div>
+                    <div>
+                        <div style="font-weight: 600;">Mobile Objex Demo</div>
+                        <div style="font-size: 0.8rem; color: #9CA3AF;">Secure Messaging</div>
+                    </div>
+                </div>
+                <div>
+                    <a href="#" class="nav-link" onclick="showPage('capture')">Capture</a>
+                    <a href="#" class="nav-link active" onclick="showPage('messaging')">Messaging</a>
+                    <button class="btn-logout" onclick="logout()">Secure Logout</button>
+                </div>
+            </div>
+            
+            <div class="capture-grid">
+                <div class="card">
+                    <h2>✉️ Compose Secure Message</h2>
+                    
+                    <div class="session-badge">
+                        <span>●</span>
+                        <span id="msgSessionId">MO-XXXXXXXXX</span>
+                    </div>
+                    
+                    <form id="messageForm">
+                        <div class="form-group">
+                            <label>Message Content</label>
+                            <textarea id="messageContent" required 
+                                      placeholder="Enter your secure message here..."></textarea>
+                            <div style="text-align: right; font-size: 0.8rem; color: #6B7280; margin-top: 0.25rem;">
+                                <span id="charCount">0</span> / 1600
+                            </div>
+                        </div>
+                        
+                        <div class="message-preview" id="msgPreview" style="display: none;">
+                            <strong>Message Preview:</strong>
+                            <div id="previewText"></div>
+                            <div style="margin-top: 0.5rem; color: var(--mo-gold);">
+                                🔐 Safety Code will be appended automatically
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary" id="sendBtn">
+                            📤 Send Secure Message
+                        </button>
+                    </form>
+                    
+                    <div id="sendSuccess" class="success-banner">
+                        ✓ Messages sent successfully with safety codes!
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>👥 Recipients (<span id="recipientCount">0</span>)</h2>
+                    
+                    <div class="data-preview" id="recipientList">
+                        <div style="text-align: center; color: #6B7280; padding: 2rem;">
+                            <div style="font-size: 3rem; margin-bottom: 0.5rem;">📭</div>
+                            <p>No recipients available</p>
+                            <p style="font-size: 0.8rem; margin-top: 0.5rem;">
+                                Capture phone numbers first
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="security-info">
+                        <h4>📤 Delivery Features</h4>
+                        <ul>
+                            <li>Safety code automatically appended</li>
+                            <li>Session-bound recipients only</li>
+                            <li>Delivery confirmation tracking</li>
+                            <li>Messages encrypted in transit</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer">
+                <p>Messages sent this session: <span id="messagesSent">0</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // MOBILE OBJEX SECURE DEMO - STATIC VERSION
+        // ==========================================
+        
+        // Demo credentials (hardcoded for demo purposes)
+        const DEMO_USERS = {
+            'demo.operator': 'DemoPass123!',
+            'demo.admin': 'AdminPass123!'
+        };
+        
+        // State management
+        let currentUser = null;
+        let sessionData = [];
+        let sessionId = null;
+        let sessionExpiry = null;
+        let messagesSent = 0;
+        let countdownInterval = null;
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check for existing session
+            const saved = sessionStorage.getItem('mo_session');
+            if (saved) {
+                const session = JSON.parse(saved);
+                if (session.expiry > Date.now()) {
+                    restoreSession(session);
+                } else {
+                    sessionStorage.removeItem('mo_session');
+                }
+            }
+            
+            setupEventListeners();
+        });
+        
+        function setupEventListeners() {
+            // Login form
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+            
+            // Capture form
+            document.getElementById('captureForm').addEventListener('submit', handleCapture);
+            
+            // Real-time validation
+            const phone = document.getElementById('capPhone');
+            const phoneConfirm = document.getElementById('capPhoneConfirm');
+            const code = document.getElementById('capCode');
+            const codeConfirm = document.getElementById('capCodeConfirm');
+            
+            function checkMatch(input1, input2, indicatorId, transform = v => v) {
+                const indicator = document.getElementById(indicatorId);
+                const val1 = transform(input1.value);
+                const val2 = transform(input2.value);
+                
+                if (val2) {
+                    if (val1 === val2) {
+                        indicator.textContent = '✓ Match';
+                        indicator.className = 'match-indicator match-success';
+                        input2.classList.remove('error');
+                    } else {
+                        indicator.textContent = '✗ Mismatch';
+                        indicator.className = 'match-indicator match-error';
+                        input2.classList.add('error');
+                    }
+                } else {
+                    indicator.textContent = '';
+                }
+            }
+            
+            phoneConfirm.addEventListener('input', () => checkMatch(phone, phoneConfirm, 'phoneMatch'));
+            codeConfirm.addEventListener('input', () => checkMatch(code, codeConfirm, 'codeMatch', v => v.toUpperCase()));
+            
+            // Auto-uppercase
+            [code, codeConfirm].forEach(input => {
+                input.addEventListener('input', (e) => {
+                    e.target.value = e.target.value.toUpperCase();
+                });
+            });
+            
+            // Message form
+            document.getElementById('messageForm').addEventListener('submit', handleSend);
+            
+            // Message preview
+            document.getElementById('messageContent').addEventListener('input', (e) => {
+                const content = e.target.value;
+                document.getElementById('charCount').textContent = content.length;
+                
+                if (content.length > 0) {
+                    document.getElementById('msgPreview').style.display = 'block';
+                    document.getElementById('previewText').textContent = content;
+                } else {
+                    document.getElementById('msgPreview').style.display = 'none';
+                }
+            });
+        }
+        
+        function handleLogin(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const btn = document.getElementById('loginBtn');
+            
+            // Validation
+            if (!username || !password) {
+                showError('Please enter both username and password');
+                return;
+            }
+            
+            btn.disabled = true;
+            btn.textContent = 'Authenticating...';
+            
+            // Simulate network delay
+            setTimeout(() => {
+                if (DEMO_USERS[username] === password) {
+                    // Success - create session
+                    currentUser = username;
+                    sessionId = 'MO-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+                    sessionExpiry = Date.now() + (30 * 60 * 1000); // 30 minutes
+                    
+                    const session = {
+                        user: username,
+                        sessionId: sessionId,
+                        expiry: sessionExpiry,
+                        captures: []
+                    };
+                    
+                    sessionStorage.setItem('mo_session', JSON.stringify(session));
+                    
+                    // Clear form
+                    document.getElementById('loginForm').reset();
+                    document.getElementById('loginError').style.display = 'none';
+                    
+                    showPage('capture');
+                    startCountdown();
+                    updateSessionDisplay();
+                    
+                } else {
+                    showError('Invalid credentials. Try: demo.operator / DemoPass123!');
+                    btn.disabled = false;
+                    btn.textContent = 'Secure Login';
+                }
+            }, 500);
+        }
+        
+        function handleCapture(e) {
+            e.preventDefault();
+            
+            const phone = document.getElementById('capPhone').value.trim();
+            const phoneConfirm = document.getElementById('capPhoneConfirm').value.trim();
+            const code = document.getElementById('capCode').value.trim().toUpperCase();
+            const codeConfirm = document.getElementById('capCodeConfirm').value.trim().toUpperCase();
+            
+            // Validation
+            if (phone !== phoneConfirm) {
+                alert('Phone numbers do not match');
+                return;
+            }
+            
+            if (code !== codeConfirm) {
+                alert('Safety codes do not match');
+                return;
+            }
+            
+            // E.164 validation
+            if (!/^\+?[1-9]\d{1,14}$/.test(phone)) {
+                alert('Invalid phone format. Use: +1234567890');
+                return;
+            }
+            
+            // Add to session
+            const capture = {
+                phone: phone,
+                code: code,
+                timestamp: new Date().toISOString(),
+                id: Date.now()
+            };
+            
+            sessionData.push(capture);
+            
+            // Save to sessionStorage
+            const session = JSON.parse(sessionStorage.getItem('mo_session'));
+            session.captures = sessionData;
+            sessionStorage.setItem('mo_session', JSON.stringify(session));
+            
+            // Show success
+            document.getElementById('captureSuccess').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('captureSuccess').style.display = 'none';
+            }, 3000);
+            
+            // Clear form
+            document.getElementById('captureForm').reset();
+            document.querySelectorAll('.match-indicator').forEach(el => el.textContent = '');
+            
+            updateDataPreview();
+            updateSessionDisplay();
+        }
+        
+        function handleSend(e) {
+            e.preventDefault();
+            
+            if (sessionData.length === 0) {
+                alert('No recipients! Capture phone numbers first.');
+                showPage('capture');
+                return;
+            }
+            
+            const message = document.getElementById('messageContent').value.trim();
+            if (!message) {
+                alert('Please enter a message');
+                return;
+            }
+            
+            const btn = document.getElementById('sendBtn');
+            btn.disabled = true;
+            btn.textContent = 'Sending...';
+            
+            // Simulate sending
+            setTimeout(() => {
+                messagesSent += sessionData.length;
+                document.getElementById('messagesSent').textContent = messagesSent;
+                
+                document.getElementById('sendSuccess').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('sendSuccess').style.display = 'none';
+                }, 3000);
+                
+                // Clear message
+                document.getElementById('messageContent').value = '';
+                document.getElementById('charCount').textContent = '0';
+                document.getElementById('msgPreview').style.display = 'none';
+                
+                btn.disabled = false;
+                btn.textContent = '📤 Send Secure Message';
+                
+                // In real app, would mark as sent in database
+                // For demo, we keep them to allow resending
+                
+            }, 1500);
+        }
+        
+        function showPage(page) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+            
+            // Show requested page
+            document.getElementById(page + 'Page').classList.remove('hidden');
+            
+            // Update displays
+            if (page === 'capture') {
+                updateDataPreview();
+            } else if (page === 'messaging') {
+                updateRecipientList();
+            }
+        }
+        
+        function updateDataPreview() {
+            const container = document.getElementById('dataPreview');
+            
+            if (sessionData.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; color: #6B7280; padding: 2rem;">
+                        <div style="font-size: 3rem; margin-bottom: 0.5rem;">📭</div>
+                        <p>No data captured in this session yet</p>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = sessionData.map(item => `
+                    <div class="preview-item">
+                        <span class="preview-phone">${maskPhone(item.phone)}</span>
+                        <span class="preview-code">${item.code}</span>
+                    </div>
+                `).join('');
+            }
+            
+            document.getElementById('captureCount').textContent = sessionData.length;
+        }
+        
+        function updateRecipientList() {
+            const container = document.getElementById('recipientList');
+            
+            if (sessionData.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; color: #6B7280; padding: 2rem;">
+                        <div style="font-size: 3rem; margin-bottom: 0.5rem;">📭</div>
+                        <p>No recipients available</p>
+                        <p style="font-size: 0.8rem; margin-top: 0.5rem;">
+                            <a href="#" onclick="showPage('capture')" style="color: var(--mo-gold);">Go to Capture page</a>
+                        </p>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = sessionData.map(item => `
+                    <div class="preview-item">
+                        <span class="preview-phone">${maskPhone(item.phone)}</span>
+                        <span class="preview-code">${item.code}</span>
+                    </div>
+                `).join('');
+            }
+            
+            document.getElementById('recipientCount').textContent = sessionData.length;
+        }
+        
+        function updateSessionDisplay() {
+            if (sessionId) {
+                document.getElementById('sessionIdDisplay').textContent = sessionId;
+                document.getElementById('msgSessionId').textContent = sessionId;
+                document.getElementById('footerSessionId').textContent = sessionId;
+            }
+        }
+        
+        function startCountdown() {
+            if (countdownInterval) clearInterval(countdownInterval);
+            
+            countdownInterval = setInterval(() => {
+                const remaining = sessionExpiry - Date.now();
+                
+                if (remaining <= 0) {
+                    clearInterval(countdownInterval);
+                    alert('Session expired! All data has been purged.');
+                    logout();
+                    return;
+                }
+                
+                const minutes = Math.floor(remaining / 60000);
+                const seconds = Math.floor((remaining % 60000) / 1000);
+                const formatted = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
+                document.getElementById('sessionTimer').textContent = formatted;
+                document.getElementById('msgTimer').textContent = formatted;
+                
+            }, 1000);
+        }
+        
+        function restoreSession(session) {
+            currentUser = session.user;
+            sessionId = session.sessionId;
+            sessionExpiry = session.expiry;
+            sessionData = session.captures || [];
+            
+            showPage('capture');
+            startCountdown();
+            updateSessionDisplay();
+            updateDataPreview();
+        }
+        
+        function logout() {
+            // Clear everything
+            currentUser = null;
+            sessionData = [];
+            sessionId = null;
+            messagesSent = 0;
+            
+            if (countdownInterval) clearInterval(countdownInterval);
+            sessionStorage.removeItem('mo_session');
+            
+            // Reset UI
+            document.getElementById('loginForm').reset();
+            document.getElementById('captureForm').reset();
+            document.getElementById('messageForm').reset();
+            document.getElementById('loginBtn').disabled = false;
+            document.getElementById('loginBtn').textContent = 'Secure Login';
+            
+            showPage('login');
+        }
+        
+        function maskPhone(phone) {
+            return phone.replace(/(\+\d{1,3})\d{4}(\d{4})/, '$1****$2');
+        }
+        
+        function showError(msg) {
+            const el = document.getElementById('loginError');
+            el.textContent = msg;
+            el.style.display = 'block';
+        }
+        
+        // Warn before closing with data
+        window.addEventListener('beforeunload', (e) => {
+            if (currentUser && sessionData.length > 0) {
+                e.preventDefault();
+                e.returnValue = 'You have unsaved session data!';
+            }
+        });
+    </script>
+</body>
+</html>
